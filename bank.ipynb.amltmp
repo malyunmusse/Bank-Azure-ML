@@ -1,0 +1,1113 @@
+{
+  "cells": [
+    {
+      "cell_type": "code",
+      "source": [
+        "print(\"helloworld\")"
+      ],
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": "helloworld\n"
+        }
+      ],
+      "execution_count": 1,
+      "metadata": {
+        "gather": {
+          "logged": 1736628830974
+        }
+      }
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "from azureml.core import Workspace\n",
+        "\n",
+        "# Connect to your workspace\n",
+        "ws = Workspace.from_config()  # Ensure you have a config file\n",
+        "print(\"Workspace connected:\", ws.name)"
+      ],
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": "Workspace connected: myfirstworkspace1\n"
+        }
+      ],
+      "execution_count": 2,
+      "metadata": {
+        "jupyter": {
+          "source_hidden": false,
+          "outputs_hidden": false
+        },
+        "nteract": {
+          "transient": {
+            "deleting": false
+          }
+        },
+        "gather": {
+          "logged": 1736628905757
+        }
+      }
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "from azureml.core import Dataset\n",
+        "\n",
+        "# Load dataset\n",
+        "dataset = Dataset.get_by_name(ws, name='TermDepositDataset')  # Replace with your dataset name\n",
+        "data = dataset.to_pandas_dataframe()\n",
+        "print(data.head())"
+      ],
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": "{'infer_column_types': 'False', 'activity': 'to_pandas_dataframe'}\n{'infer_column_types': 'False', 'activity': 'to_pandas_dataframe', 'activityApp': 'TabularDataset'}\n   age  balance  day  duration  campaign  previous  job_blue-collar  \\\n0   59     2343    5      1042         1         0            False   \n1   56       45    5      1467         1         0            False   \n2   41     1270    5      1389         1         0            False   \n3   55     2476    5       579         1         0            False   \n4   54      184    5       673         2         0            False   \n\n   job_entrepreneur  job_housemaid  job_management  ...  month_may  month_nov  \\\n0             False          False           False  ...       True      False   \n1             False          False           False  ...       True      False   \n2             False          False           False  ...       True      False   \n3             False          False           False  ...       True      False   \n4             False          False           False  ...       True      False   \n\n   month_oct  month_sep  poutcome_other  poutcome_success  poutcome_unknown  \\\n0      False      False           False             False              True   \n1      False      False           False             False              True   \n2      False      False           False             False              True   \n3      False      False           False             False              True   \n4      False      False           False             False              True   \n\n   housing_new  loan_new  deposit_new  \n0            1         0            1  \n1            0         0            1  \n2            1         0            1  \n3            1         0            1  \n4            0         0            1  \n\n[5 rows x 41 columns]\n"
+        }
+      ],
+      "execution_count": 3,
+      "metadata": {
+        "jupyter": {
+          "source_hidden": false,
+          "outputs_hidden": false
+        },
+        "nteract": {
+          "transient": {
+            "deleting": false
+          }
+        },
+        "gather": {
+          "logged": 1736628948859
+        }
+      }
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "# Check for missing values\n",
+        "print(\"Missing values per column:\")\n",
+        "print(data.isnull().sum())\n",
+        "\n",
+        "# Verify column types\n",
+        "print(\"Column data types:\")\n",
+        "print(data.dtypes)"
+      ],
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": "Missing values per column:\nage                    0\nbalance                0\nday                    0\nduration               0\ncampaign               0\nprevious               0\njob_blue-collar        0\njob_entrepreneur       0\njob_housemaid          0\njob_management         0\njob_retired            0\njob_self-employed      0\njob_services           0\njob_student            0\njob_technician         0\njob_unemployed         0\njob_unknown            0\nmarital_married        0\nmarital_single         0\neducation_secondary    0\neducation_tertiary     0\neducation_unknown      0\ncontact_telephone      0\ncontact_unknown        0\nmonth_aug              0\nmonth_dec              0\nmonth_feb              0\nmonth_jan              0\nmonth_jul              0\nmonth_jun              0\nmonth_mar              0\nmonth_may              0\nmonth_nov              0\nmonth_oct              0\nmonth_sep              0\npoutcome_other         0\npoutcome_success       0\npoutcome_unknown       0\nhousing_new            0\nloan_new               0\ndeposit_new            0\ndtype: int64\nColumn data types:\nage                    int64\nbalance                int64\nday                    int64\nduration               int64\ncampaign               int64\nprevious               int64\njob_blue-collar         bool\njob_entrepreneur        bool\njob_housemaid           bool\njob_management          bool\njob_retired             bool\njob_self-employed       bool\njob_services            bool\njob_student             bool\njob_technician          bool\njob_unemployed          bool\njob_unknown             bool\nmarital_married         bool\nmarital_single          bool\neducation_secondary     bool\neducation_tertiary      bool\neducation_unknown       bool\ncontact_telephone       bool\ncontact_unknown         bool\nmonth_aug               bool\nmonth_dec               bool\nmonth_feb               bool\nmonth_jan               bool\nmonth_jul               bool\nmonth_jun               bool\nmonth_mar               bool\nmonth_may               bool\nmonth_nov               bool\nmonth_oct               bool\nmonth_sep               bool\npoutcome_other          bool\npoutcome_success        bool\npoutcome_unknown        bool\nhousing_new            int64\nloan_new               int64\ndeposit_new            int64\ndtype: object\n"
+        }
+      ],
+      "execution_count": 4,
+      "metadata": {
+        "jupyter": {
+          "source_hidden": false,
+          "outputs_hidden": false
+        },
+        "nteract": {
+          "transient": {
+            "deleting": false
+          }
+        },
+        "gather": {
+          "logged": 1736628980469
+        }
+      }
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "print(data.info())\n",
+        "print(data.describe(include='all'))"
+      ],
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": "<class 'pandas.core.frame.DataFrame'>\nRangeIndex: 11152 entries, 0 to 11151\nData columns (total 41 columns):\n #   Column               Non-Null Count  Dtype\n---  ------               --------------  -----\n 0   age                  11152 non-null  int64\n 1   balance              11152 non-null  int64\n 2   day                  11152 non-null  int64\n 3   duration             11152 non-null  int64\n 4   campaign             11152 non-null  int64\n 5   previous             11152 non-null  int64\n 6   job_blue-collar      11152 non-null  bool \n 7   job_entrepreneur     11152 non-null  bool \n 8   job_housemaid        11152 non-null  bool \n 9   job_management       11152 non-null  bool \n 10  job_retired          11152 non-null  bool \n 11  job_self-employed    11152 non-null  bool \n 12  job_services         11152 non-null  bool \n 13  job_student          11152 non-null  bool \n 14  job_technician       11152 non-null  bool \n 15  job_unemployed       11152 non-null  bool \n 16  job_unknown          11152 non-null  bool \n 17  marital_married      11152 non-null  bool \n 18  marital_single       11152 non-null  bool \n 19  education_secondary  11152 non-null  bool \n 20  education_tertiary   11152 non-null  bool \n 21  education_unknown    11152 non-null  bool \n 22  contact_telephone    11152 non-null  bool \n 23  contact_unknown      11152 non-null  bool \n 24  month_aug            11152 non-null  bool \n 25  month_dec            11152 non-null  bool \n 26  month_feb            11152 non-null  bool \n 27  month_jan            11152 non-null  bool \n 28  month_jul            11152 non-null  bool \n 29  month_jun            11152 non-null  bool \n 30  month_mar            11152 non-null  bool \n 31  month_may            11152 non-null  bool \n 32  month_nov            11152 non-null  bool \n 33  month_oct            11152 non-null  bool \n 34  month_sep            11152 non-null  bool \n 35  poutcome_other       11152 non-null  bool \n 36  poutcome_success     11152 non-null  bool \n 37  poutcome_unknown     11152 non-null  bool \n 38  housing_new          11152 non-null  int64\n 39  loan_new             11152 non-null  int64\n 40  deposit_new          11152 non-null  int64\ndtypes: bool(32), int64(9)\nmemory usage: 1.1 MB\nNone\n                age       balance           day      duration      campaign  \\\ncount   11152.00000  11152.000000  11152.000000  11152.000000  11152.000000   \nunique          NaN           NaN           NaN           NaN           NaN   \ntop             NaN           NaN           NaN           NaN           NaN   \nfreq            NaN           NaN           NaN           NaN           NaN   \nmean       41.23377   1528.360653     15.657819    372.157909      2.489329   \nstd        11.91599   3225.788890      8.420620    347.193012      2.564402   \nmin        18.00000  -6847.000000      1.000000      2.000000      1.000000   \n25%        32.00000    122.000000      8.000000    138.000000      1.000000   \n50%        39.00000    550.000000     15.000000    255.000000      2.000000   \n75%        49.00000   1708.250000     22.000000    496.000000      3.000000   \nmax        95.00000  81204.000000     31.000000   3881.000000     32.000000   \n\n            previous job_blue-collar job_entrepreneur job_housemaid  \\\ncount   11152.000000           11152            11152         11152   \nunique           NaN               2                2             2   \ntop              NaN           False            False         False   \nfreq             NaN            9213            10824         10878   \nmean        0.812590             NaN              NaN           NaN   \nstd         2.074012             NaN              NaN           NaN   \nmin         0.000000             NaN              NaN           NaN   \n25%         0.000000             NaN              NaN           NaN   \n50%         0.000000             NaN              NaN           NaN   \n75%         1.000000             NaN              NaN           NaN   \nmax        30.000000             NaN              NaN           NaN   \n\n       job_management  ... month_may month_nov month_oct month_sep  \\\ncount           11152  ...     11152     11152     11152     11152   \nunique              2  ...         2         2         2         2   \ntop             False  ...     False     False     False     False   \nfreq             8587  ...      8331     10209     10760     10834   \nmean              NaN  ...       NaN       NaN       NaN       NaN   \nstd               NaN  ...       NaN       NaN       NaN       NaN   \nmin               NaN  ...       NaN       NaN       NaN       NaN   \n25%               NaN  ...       NaN       NaN       NaN       NaN   \n50%               NaN  ...       NaN       NaN       NaN       NaN   \n75%               NaN  ...       NaN       NaN       NaN       NaN   \nmax               NaN  ...       NaN       NaN       NaN       NaN   \n\n       poutcome_other poutcome_success poutcome_unknown   housing_new  \\\ncount           11152            11152            11152  11152.000000   \nunique              2                2                2           NaN   \ntop             False            False             True           NaN   \nfreq            10619            10081             8321           NaN   \nmean              NaN              NaN              NaN      0.472830   \nstd               NaN              NaN              NaN      0.499284   \nmin               NaN              NaN              NaN      0.000000   \n25%               NaN              NaN              NaN      0.000000   \n50%               NaN              NaN              NaN      0.000000   \n75%               NaN              NaN              NaN      1.000000   \nmax               NaN              NaN              NaN      1.000000   \n\n            loan_new   deposit_new  \ncount   11152.000000  11152.000000  \nunique           NaN           NaN  \ntop              NaN           NaN  \nfreq             NaN           NaN  \nmean        0.130560      0.474085  \nstd         0.336933      0.499350  \nmin         0.000000      0.000000  \n25%         0.000000      0.000000  \n50%         0.000000      0.000000  \n75%         0.000000      1.000000  \nmax         1.000000      1.000000  \n\n[11 rows x 41 columns]\n"
+        }
+      ],
+      "execution_count": 5,
+      "metadata": {
+        "jupyter": {
+          "source_hidden": false,
+          "outputs_hidden": false
+        },
+        "nteract": {
+          "transient": {
+            "deleting": false
+          }
+        },
+        "gather": {
+          "logged": 1736629030359
+        }
+      }
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "# Convert TabularDataset to DataFrame\n",
+        "data = dataset.to_pandas_dataframe()\n",
+        "\n",
+        "# Separate features and target variable\n",
+        "X = data.drop(columns=['deposit_new'])  # Replace 'deposit_new' with your target column name\n",
+        "y = data['deposit_new']\n",
+        "\n",
+        "# Split the data\n",
+        "from sklearn.model_selection import train_test_split\n",
+        "X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)\n",
+        "\n",
+        "print(\"Training data shape:\", X_train.shape)\n",
+        "print(\"Testing data shape:\", X_test.shape)"
+      ],
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": "{'infer_column_types': 'False', 'activity': 'to_pandas_dataframe'}\n{'infer_column_types': 'False', 'activity': 'to_pandas_dataframe', 'activityApp': 'TabularDataset'}\nTraining data shape: (8921, 40)\nTesting data shape: (2231, 40)\n"
+        }
+      ],
+      "execution_count": 6,
+      "metadata": {
+        "jupyter": {
+          "source_hidden": false,
+          "outputs_hidden": false
+        },
+        "nteract": {
+          "transient": {
+            "deleting": false
+          }
+        },
+        "gather": {
+          "logged": 1736629060924
+        }
+      }
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "from sklearn.model_selection import train_test_split\n",
+        "from sklearn.ensemble import RandomForestClassifier\n",
+        "from sklearn.metrics import accuracy_score\n",
+        "\n",
+        "# Split the data into features (X) and target (y)\n",
+        "X = data.drop(columns=[\"deposit_new\"])\n",
+        "y = data[\"deposit_new\"]\n",
+        "\n",
+        "# Perform a train-test split\n",
+        "X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42, stratify=y)\n",
+        "\n",
+        "# Train a Random Forest Classifier\n",
+        "model = RandomForestClassifier(random_state=42)\n",
+        "model.fit(X_train, y_train)\n",
+        "\n",
+        "# Make predictions on the test set\n",
+        "y_pred = model.predict(X_test)\n",
+        "\n",
+        "# Calculate accuracy\n",
+        "accuracy = accuracy_score(y_test, y_pred)\n",
+        "\n",
+        "accuracy"
+      ],
+      "outputs": [
+        {
+          "output_type": "execute_result",
+          "execution_count": 7,
+          "data": {
+            "text/plain": "0.8529807261317794"
+          },
+          "metadata": {}
+        }
+      ],
+      "execution_count": 7,
+      "metadata": {
+        "jupyter": {
+          "source_hidden": false,
+          "outputs_hidden": false
+        },
+        "nteract": {
+          "transient": {
+            "deleting": false
+          }
+        },
+        "gather": {
+          "logged": 1736629085750
+        }
+      }
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "import joblib\n",
+        "\n",
+        "# Save the trained model to a file\n",
+        "model_path = \"random_forest_model.pkl\"\n",
+        "joblib.dump(model, model_path)\n",
+        "\n",
+        "# Confirm the model is saved\n",
+        "print(\"Model saved successfully:\", model_path)"
+      ],
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": "Model saved successfully: random_forest_model.pkl\n"
+        }
+      ],
+      "execution_count": 8,
+      "metadata": {
+        "jupyter": {
+          "source_hidden": false,
+          "outputs_hidden": false
+        },
+        "nteract": {
+          "transient": {
+            "deleting": false
+          }
+        },
+        "gather": {
+          "logged": 1736629105711
+        }
+      }
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "import os\n",
+        "\n",
+        "# Check if the file exists in the current directory\n",
+        "print(\"Files in current directory:\", os.listdir())"
+      ],
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": "Files in current directory: ['.amlignore', '.amlignore.amltmp', '.ipynb_aml_checkpoints', 'bank.ipynb', 'bank.ipynb.amltmp', 'random_forest_model.pkl', 'score.py', 'score.py.amltmp']\n"
+        }
+      ],
+      "execution_count": 20,
+      "metadata": {
+        "jupyter": {
+          "source_hidden": false,
+          "outputs_hidden": false
+        },
+        "nteract": {
+          "transient": {
+            "deleting": false
+          }
+        },
+        "gather": {
+          "logged": 1736631542843
+        }
+      }
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "!pip install azureml-sdk\n"
+      ],
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": "Requirement already satisfied: azureml-sdk in /anaconda/envs/azureml_py38/lib/python3.10/site-packages (1.57.0)\nRequirement already satisfied: azureml-dataset-runtime[fuse]~=1.57.0 in /anaconda/envs/azureml_py38/lib/python3.10/site-packages (from azureml-sdk) (1.57.0)\nRequirement already satisfied: azureml-train-automl-client~=1.57.0 in /anaconda/envs/azureml_py38/lib/python3.10/site-packages (from azureml-sdk) (1.57.0)\nRequirement already satisfied: azureml-train-core~=1.57.0 in /anaconda/envs/azureml_py38/lib/python3.10/site-packages (from azureml-sdk) (1.57.0)\nRequirement already satisfied: azureml-core~=1.57.0 in /anaconda/envs/azureml_py38/lib/python3.10/site-packages (from azureml-sdk) (1.57.0)\nRequirement already satisfied: azureml-pipeline~=1.57.0 in /anaconda/envs/azureml_py38/lib/python3.10/site-packages (from azureml-sdk) (1.57.0)\nRequirement already satisfied: pytz in /anaconda/envs/azureml_py38/lib/python3.10/site-packages (from azureml-core~=1.57.0->azureml-sdk) (2022.5)\nRequirement already satisfied: urllib3<3.0.0,>1.26.17 in /anaconda/envs/azureml_py38/lib/python3.10/site-packages (from azureml-core~=1.57.0->azureml-sdk) (1.26.19)\nRequirement already satisfied: azure-mgmt-storage<=22.0.0,>=16.0.0 in /anaconda/envs/azureml_py38/lib/python3.10/site-packages (from azureml-core~=1.57.0->azureml-sdk) (21.2.0)\nRequirement already satisfied: pathspec<1.0.0 in /anaconda/envs/azureml_py38/lib/python3.10/site-packages (from azureml-core~=1.57.0->azureml-sdk) (0.12.1)\nRequirement already satisfied: azure-mgmt-authorization<5,>=0.40.0 in /anaconda/envs/azureml_py38/lib/python3.10/site-packages (from azureml-core~=1.57.0->azureml-sdk) (4.0.0)\nRequirement already satisfied: ndg-httpsclient<=0.5.1 in /anaconda/envs/azureml_py38/lib/python3.10/site-packages (from azureml-core~=1.57.0->azureml-sdk) (0.5.1)\nRequirement already satisfied: pyopenssl<25.0.0 in /anaconda/envs/azureml_py38/lib/python3.10/site-packages (from azureml-core~=1.57.0->azureml-sdk) (23.0.0)\nRequirement already satisfied: azure-mgmt-resource<=24.0.0,>=15.0.0 in /anaconda/envs/azureml_py38/lib/python3.10/site-packages (from azureml-core~=1.57.0->azureml-sdk) (23.1.1)\nRequirement already satisfied: jmespath<2.0.0 in /anaconda/envs/azureml_py38/lib/python3.10/site-packages (from azureml-core~=1.57.0->azureml-sdk) (0.10.0)\nRequirement already satisfied: humanfriendly<11.0,>=4.7 in /anaconda/envs/azureml_py38/lib/python3.10/site-packages (from azureml-core~=1.57.0->azureml-sdk) (10.0)\nRequirement already satisfied: requests[socks]<3.0.0,>=2.19.1 in /anaconda/envs/azureml_py38/lib/python3.10/site-packages (from azureml-core~=1.57.0->azureml-sdk) (2.32.3)\nRequirement already satisfied: msrestazure<=0.7,>=0.4.33 in /anaconda/envs/azureml_py38/lib/python3.10/site-packages (from azureml-core~=1.57.0->azureml-sdk) (0.6.4.post1)\nRequirement already satisfied: azure-graphrbac<1.0.0,>=0.40.0 in /anaconda/envs/azureml_py38/lib/python3.10/site-packages (from azureml-core~=1.57.0->azureml-sdk) (0.60.0)\nRequirement already satisfied: azure-mgmt-network<=26.0.0 in /anaconda/envs/azureml_py38/lib/python3.10/site-packages (from azureml-core~=1.57.0->azureml-sdk) (25.1.0)\nRequirement already satisfied: paramiko<4.0.0,>=2.0.8 in /anaconda/envs/azureml_py38/lib/python3.10/site-packages (from azureml-core~=1.57.0->azureml-sdk) (3.4.0)\nRequirement already satisfied: contextlib2<22.0.0 in /anaconda/envs/azureml_py38/lib/python3.10/site-packages (from azureml-core~=1.57.0->azureml-sdk) (21.6.0)\nRequirement already satisfied: msal-extensions<=2.0.0,>=0.3.0 in /anaconda/envs/azureml_py38/lib/python3.10/site-packages (from azureml-core~=1.57.0->azureml-sdk) (1.2.0)\nRequirement already satisfied: azure-core<2.0.0 in /anaconda/envs/azureml_py38/lib/python3.10/site-packages (from azureml-core~=1.57.0->azureml-sdk) (1.30.2)\nRequirement already satisfied: azure-mgmt-containerregistry<11,>=8.2.0 in /anaconda/envs/azureml_py38/lib/python3.10/site-packages (from azureml-core~=1.57.0->azureml-sdk) (10.3.0)\nRequirement already satisfied: SecretStorage<4.0.0 in /anaconda/envs/azureml_py38/lib/python3.10/site-packages (from azureml-core~=1.57.0->azureml-sdk) (3.3.3)\nRequirement already satisfied: azure-mgmt-keyvault<11.0.0,>=0.40.0 in /anaconda/envs/azureml_py38/lib/python3.10/site-packages (from azureml-core~=1.57.0->azureml-sdk) (10.3.0)\nRequirement already satisfied: azure-common<2.0.0,>=1.1.12 in /anaconda/envs/azureml_py38/lib/python3.10/site-packages (from azureml-core~=1.57.0->azureml-sdk) (1.1.28)\nRequirement already satisfied: packaging<=25.0,>=20.0 in /anaconda/envs/azureml_py38/lib/python3.10/site-packages (from azureml-core~=1.57.0->azureml-sdk) (24.1)\nRequirement already satisfied: argcomplete<4 in /anaconda/envs/azureml_py38/lib/python3.10/site-packages (from azureml-core~=1.57.0->azureml-sdk) (3.3.0)\nRequirement already satisfied: docker<8.0.0 in /anaconda/envs/azureml_py38/lib/python3.10/site-packages (from azureml-core~=1.57.0->azureml-sdk) (7.1.0)\nRequirement already satisfied: msrest<=0.7.1,>=0.5.1 in /anaconda/envs/azureml_py38/lib/python3.10/site-packages (from azureml-core~=1.57.0->azureml-sdk) (0.7.1)\nRequirement already satisfied: jsonpickle<4.0.0 in /anaconda/envs/azureml_py38/lib/python3.10/site-packages (from azureml-core~=1.57.0->azureml-sdk) (3.2.2)\nRequirement already satisfied: knack<0.12.0 in /anaconda/envs/azureml_py38/lib/python3.10/site-packages (from azureml-core~=1.57.0->azureml-sdk) (0.11.0)\nRequirement already satisfied: adal<=1.2.7,>=1.2.0 in /anaconda/envs/azureml_py38/lib/python3.10/site-packages (from azureml-core~=1.57.0->azureml-sdk) (1.2.7)\nRequirement already satisfied: python-dateutil<3.0.0,>=2.7.3 in /anaconda/envs/azureml_py38/lib/python3.10/site-packages (from azureml-core~=1.57.0->azureml-sdk) (2.9.0.post0)\nRequirement already satisfied: pkginfo in /anaconda/envs/azureml_py38/lib/python3.10/site-packages (from azureml-core~=1.57.0->azureml-sdk) (1.11.1)\nRequirement already satisfied: PyJWT<3.0.0 in /anaconda/envs/azureml_py38/lib/python3.10/site-packages (from azureml-core~=1.57.0->azureml-sdk) (2.4.0)\nRequirement already satisfied: backports.tempfile in /anaconda/envs/azureml_py38/lib/python3.10/site-packages (from azureml-core~=1.57.0->azureml-sdk) (1.0)\nRequirement already satisfied: msal<2.0.0,>=1.15.0 in /anaconda/envs/azureml_py38/lib/python3.10/site-packages (from azureml-core~=1.57.0->azureml-sdk) (1.30.0)\nRequirement already satisfied: numpy!=1.19.3,<1.24 in /anaconda/envs/azureml_py38/lib/python3.10/site-packages (from azureml-dataset-runtime[fuse]~=1.57.0->azureml-sdk) (1.23.5)\nRequirement already satisfied: azureml-dataprep<5.2.0a,>=5.1.0a in /anaconda/envs/azureml_py38/lib/python3.10/site-packages (from azureml-dataset-runtime[fuse]~=1.57.0->azureml-sdk) (5.1.6)\nRequirement already satisfied: pyarrow>=0.17.0 in /anaconda/envs/azureml_py38/lib/python3.10/site-packages (from azureml-dataset-runtime[fuse]~=1.57.0->azureml-sdk) (14.0.2)\nRequirement already satisfied: fusepy<4.0.0,>=3.0.1 in /anaconda/envs/azureml_py38/lib/python3.10/site-packages (from azureml-dataset-runtime[fuse]~=1.57.0->azureml-sdk) (3.0.1)\nRequirement already satisfied: azureml-pipeline-steps~=1.57.0 in /anaconda/envs/azureml_py38/lib/python3.10/site-packages (from azureml-pipeline~=1.57.0->azureml-sdk) (1.57.0)\nRequirement already satisfied: azureml-pipeline-core~=1.57.0 in /anaconda/envs/azureml_py38/lib/python3.10/site-packages (from azureml-pipeline~=1.57.0->azureml-sdk) (1.57.0)\nRequirement already satisfied: azureml-automl-core~=1.57.0 in /anaconda/envs/azureml_py38/lib/python3.10/site-packages (from azureml-train-automl-client~=1.57.0->azureml-sdk) (1.57.0)\nRequirement already satisfied: azureml-telemetry~=1.57.0 in /anaconda/envs/azureml_py38/lib/python3.10/site-packages (from azureml-train-automl-client~=1.57.0->azureml-sdk) (1.57.0)\nRequirement already satisfied: azureml-train-restclients-hyperdrive~=1.57.0 in /anaconda/envs/azureml_py38/lib/python3.10/site-packages (from azureml-train-core~=1.57.0->azureml-sdk) (1.57.0)\nRequirement already satisfied: cryptography>=1.1.0 in /anaconda/envs/azureml_py38/lib/python3.10/site-packages (from adal<=1.2.7,>=1.2.0->azureml-core~=1.57.0->azureml-sdk) (38.0.4)\nRequirement already satisfied: typing-extensions>=4.6.0 in /anaconda/envs/azureml_py38/lib/python3.10/site-packages (from azure-core<2.0.0->azureml-core~=1.57.0->azureml-sdk) (4.12.2)\nRequirement already satisfied: six>=1.11.0 in /anaconda/envs/azureml_py38/lib/python3.10/site-packages (from azure-core<2.0.0->azureml-core~=1.57.0->azureml-sdk) (1.16.0)\nRequirement already satisfied: azure-mgmt-core<2.0.0,>=1.3.2 in /anaconda/envs/azureml_py38/lib/python3.10/site-packages (from azure-mgmt-authorization<5,>=0.40.0->azureml-core~=1.57.0->azureml-sdk) (1.4.0)\nRequirement already satisfied: isodate<1.0.0,>=0.6.1 in /anaconda/envs/azureml_py38/lib/python3.10/site-packages (from azure-mgmt-authorization<5,>=0.40.0->azureml-core~=1.57.0->azureml-sdk) (0.6.1)\nRequirement already satisfied: importlib-resources<=6.4.0 in /anaconda/envs/azureml_py38/lib/python3.10/site-packages (from azureml-automl-core~=1.57.0->azureml-train-automl-client~=1.57.0->azureml-sdk) (6.4.0)\nRequirement already satisfied: importlib-metadata<=8.2.0 in /anaconda/envs/azureml_py38/lib/python3.10/site-packages (from azureml-automl-core~=1.57.0->azureml-train-automl-client~=1.57.0->azureml-sdk) (8.2.0)\nRequirement already satisfied: cloudpickle<3.0.0,>=1.1.0 in /anaconda/envs/azureml_py38/lib/python3.10/site-packages (from azureml-dataprep<5.2.0a,>=5.1.0a->azureml-dataset-runtime[fuse]~=1.57.0->azureml-sdk) (2.2.1)\nRequirement already satisfied: azure-identity>=1.7.0 in /anaconda/envs/azureml_py38/lib/python3.10/site-packages (from azureml-dataprep<5.2.0a,>=5.1.0a->azureml-dataset-runtime[fuse]~=1.57.0->azureml-sdk) (1.17.1)\nRequirement already satisfied: azureml-dataprep-native<42.0.0,>=41.0.0 in /anaconda/envs/azureml_py38/lib/python3.10/site-packages (from azureml-dataprep<5.2.0a,>=5.1.0a->azureml-dataset-runtime[fuse]~=1.57.0->azureml-sdk) (41.0.0)\nRequirement already satisfied: azureml-dataprep-rslex~=2.22.2dev0 in /anaconda/envs/azureml_py38/lib/python3.10/site-packages (from azureml-dataprep<5.2.0a,>=5.1.0a->azureml-dataset-runtime[fuse]~=1.57.0->azureml-sdk) (2.22.2)\nRequirement already satisfied: jsonschema in /anaconda/envs/azureml_py38/lib/python3.10/site-packages (from azureml-dataprep<5.2.0a,>=5.1.0a->azureml-dataset-runtime[fuse]~=1.57.0->azureml-sdk) (4.23.0)\nRequirement already satisfied: pyyaml<7.0.0,>=5.1.0 in /anaconda/envs/azureml_py38/lib/python3.10/site-packages (from azureml-dataprep<5.2.0a,>=5.1.0a->azureml-dataset-runtime[fuse]~=1.57.0->azureml-sdk) (6.0.1)\nRequirement already satisfied: applicationinsights in /anaconda/envs/azureml_py38/lib/python3.10/site-packages (from azureml-telemetry~=1.57.0->azureml-train-automl-client~=1.57.0->azureml-sdk) (0.11.10)\nRequirement already satisfied: tabulate in /anaconda/envs/azureml_py38/lib/python3.10/site-packages (from knack<0.12.0->azureml-core~=1.57.0->azureml-sdk) (0.9.0)\nRequirement already satisfied: pygments in /anaconda/envs/azureml_py38/lib/python3.10/site-packages (from knack<0.12.0->azureml-core~=1.57.0->azureml-sdk) (2.18.0)\nRequirement already satisfied: portalocker<3,>=1.4 in /anaconda/envs/azureml_py38/lib/python3.10/site-packages (from msal-extensions<=2.0.0,>=0.3.0->azureml-core~=1.57.0->azureml-sdk) (2.10.1)\nRequirement already satisfied: certifi>=2017.4.17 in /anaconda/envs/azureml_py38/lib/python3.10/site-packages (from msrest<=0.7.1,>=0.5.1->azureml-core~=1.57.0->azureml-sdk) (2024.8.30)\nRequirement already satisfied: requests-oauthlib>=0.5.0 in /anaconda/envs/azureml_py38/lib/python3.10/site-packages (from msrest<=0.7.1,>=0.5.1->azureml-core~=1.57.0->azureml-sdk) (2.0.0)\nRequirement already satisfied: pyasn1>=0.1.1 in /anaconda/envs/azureml_py38/lib/python3.10/site-packages (from ndg-httpsclient<=0.5.1->azureml-core~=1.57.0->azureml-sdk) (0.6.0)\nRequirement already satisfied: bcrypt>=3.2 in /anaconda/envs/azureml_py38/lib/python3.10/site-packages (from paramiko<4.0.0,>=2.0.8->azureml-core~=1.57.0->azureml-sdk) (4.2.0)\nRequirement already satisfied: pynacl>=1.5 in /anaconda/envs/azureml_py38/lib/python3.10/site-packages (from paramiko<4.0.0,>=2.0.8->azureml-core~=1.57.0->azureml-sdk) (1.5.0)\nRequirement already satisfied: charset-normalizer<4,>=2 in /anaconda/envs/azureml_py38/lib/python3.10/site-packages (from requests[socks]<3.0.0,>=2.19.1->azureml-core~=1.57.0->azureml-sdk) (3.3.2)\nRequirement already satisfied: idna<4,>=2.5 in /anaconda/envs/azureml_py38/lib/python3.10/site-packages (from requests[socks]<3.0.0,>=2.19.1->azureml-core~=1.57.0->azureml-sdk) (3.7)\nRequirement already satisfied: PySocks!=1.5.7,>=1.5.6 in /anaconda/envs/azureml_py38/lib/python3.10/site-packages (from requests[socks]<3.0.0,>=2.19.1->azureml-core~=1.57.0->azureml-sdk) (1.7.1)\nRequirement already satisfied: jeepney>=0.6 in /anaconda/envs/azureml_py38/lib/python3.10/site-packages (from SecretStorage<4.0.0->azureml-core~=1.57.0->azureml-sdk) (0.8.0)\nRequirement already satisfied: backports.weakref in /anaconda/envs/azureml_py38/lib/python3.10/site-packages (from backports.tempfile->azureml-core~=1.57.0->azureml-sdk) (1.0.post1)\nRequirement already satisfied: cffi>=1.12 in /anaconda/envs/azureml_py38/lib/python3.10/site-packages (from cryptography>=1.1.0->adal<=1.2.7,>=1.2.0->azureml-core~=1.57.0->azureml-sdk) (1.16.0)\nRequirement already satisfied: zipp>=0.5 in /anaconda/envs/azureml_py38/lib/python3.10/site-packages (from importlib-metadata<=8.2.0->azureml-automl-core~=1.57.0->azureml-train-automl-client~=1.57.0->azureml-sdk) (3.19.2)\nRequirement already satisfied: oauthlib>=3.0.0 in /anaconda/envs/azureml_py38/lib/python3.10/site-packages (from requests-oauthlib>=0.5.0->msrest<=0.7.1,>=0.5.1->azureml-core~=1.57.0->azureml-sdk) (3.2.2)\nRequirement already satisfied: attrs>=22.2.0 in /anaconda/envs/azureml_py38/lib/python3.10/site-packages (from jsonschema->azureml-dataprep<5.2.0a,>=5.1.0a->azureml-dataset-runtime[fuse]~=1.57.0->azureml-sdk) (24.2.0)\nRequirement already satisfied: rpds-py>=0.7.1 in /anaconda/envs/azureml_py38/lib/python3.10/site-packages (from jsonschema->azureml-dataprep<5.2.0a,>=5.1.0a->azureml-dataset-runtime[fuse]~=1.57.0->azureml-sdk) (0.19.1)\nRequirement already satisfied: referencing>=0.28.4 in /anaconda/envs/azureml_py38/lib/python3.10/site-packages (from jsonschema->azureml-dataprep<5.2.0a,>=5.1.0a->azureml-dataset-runtime[fuse]~=1.57.0->azureml-sdk) (0.35.1)\nRequirement already satisfied: jsonschema-specifications>=2023.03.6 in /anaconda/envs/azureml_py38/lib/python3.10/site-packages (from jsonschema->azureml-dataprep<5.2.0a,>=5.1.0a->azureml-dataset-runtime[fuse]~=1.57.0->azureml-sdk) (2023.12.1)\nRequirement already satisfied: pycparser in /anaconda/envs/azureml_py38/lib/python3.10/site-packages (from cffi>=1.12->cryptography>=1.1.0->adal<=1.2.7,>=1.2.0->azureml-core~=1.57.0->azureml-sdk) (2.22)\n"
+        }
+      ],
+      "execution_count": 10,
+      "metadata": {
+        "jupyter": {
+          "source_hidden": false,
+          "outputs_hidden": false
+        },
+        "nteract": {
+          "transient": {
+            "deleting": false
+          }
+        }
+      }
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "from azureml.core import Workspace, Experiment, Environment, Model\n",
+        "from azureml.core.model import InferenceConfig\n",
+        "from azureml.core.webservice import AciWebservice"
+      ],
+      "outputs": [],
+      "execution_count": 11,
+      "metadata": {
+        "jupyter": {
+          "source_hidden": false,
+          "outputs_hidden": false
+        },
+        "nteract": {
+          "transient": {
+            "deleting": false
+          }
+        },
+        "gather": {
+          "logged": 1736629320305
+        }
+      }
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "from azureml.core import Workspace\n",
+        "\n",
+        "# Connect to Azure ML Workspace\n",
+        "ws = Workspace.from_config()\n",
+        "\n",
+        "# Print workspace details\n",
+        "print(\"Workspace name:\", ws.name)\n",
+        "print(\"Resource group:\", ws.resource_group)\n",
+        "print(\"Location:\", ws.location)"
+      ],
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": "Workspace name: myfirstworkspace1\nResource group: testresourcegroup\nLocation: eastus\n"
+        }
+      ],
+      "execution_count": 14,
+      "metadata": {
+        "jupyter": {
+          "source_hidden": false,
+          "outputs_hidden": false
+        },
+        "nteract": {
+          "transient": {
+            "deleting": false
+          }
+        },
+        "gather": {
+          "logged": 1736630149834
+        }
+      }
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "# Register the model in Azure\n",
+        "registered_model = Model.register(\n",
+        "    workspace=ws,\n",
+        "    model_name=\"random_forest_model\",  # Name for the model in Azure\n",
+        "    model_path=\"random_forest_model.pkl\"  # Path to the saved model file\n",
+        ")\n",
+        "\n",
+        "print(\"Model registered:\", registered_model.name)"
+      ],
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": "Registering model random_forest_model\nModel registered: random_forest_model\n"
+        }
+      ],
+      "execution_count": 15,
+      "metadata": {
+        "jupyter": {
+          "source_hidden": false,
+          "outputs_hidden": false
+        },
+        "nteract": {
+          "transient": {
+            "deleting": false
+          }
+        },
+        "gather": {
+          "logged": 1736630197595
+        }
+      }
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "from azureml.core.environment import Environment\n",
+        "\n",
+        "# Define the environment\n",
+        "deployment_env = Environment(name=\"deployment_env\")\n",
+        "deployment_env.python.conda_dependencies.add_pip_package(\"scikit-learn\")\n",
+        "deployment_env.python.conda_dependencies.add_pip_package(\"pandas\")\n",
+        "deployment_env.python.conda_dependencies.add_pip_package(\"joblib\")\n",
+        "deployment_env.python.conda_dependencies.add_pip_package(\"azureml-defaults\")\n",
+        "\n",
+        "# Register the environment\n",
+        "deployment_env.register(workspace=ws)\n",
+        "print(\"Environment registered.\")"
+      ],
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": "Environment registered.\n"
+        }
+      ],
+      "execution_count": 16,
+      "metadata": {
+        "jupyter": {
+          "source_hidden": false,
+          "outputs_hidden": false
+        },
+        "nteract": {
+          "transient": {
+            "deleting": false
+          }
+        },
+        "gather": {
+          "logged": 1736630214658
+        }
+      }
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "from azureml.core.model import InferenceConfig\n",
+        "\n",
+        "# Define inference configuration\n",
+        "inference_config = InferenceConfig(\n",
+        "    entry_script=\"score.py\",  # Path to your score.py script\n",
+        "    environment=deployment_env\n",
+        ")"
+      ],
+      "outputs": [],
+      "execution_count": 21,
+      "metadata": {
+        "jupyter": {
+          "source_hidden": false,
+          "outputs_hidden": false
+        },
+        "nteract": {
+          "transient": {
+            "deleting": false
+          }
+        },
+        "gather": {
+          "logged": 1736631596670
+        }
+      }
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "# Define deployment configuration\n",
+        "deployment_config = AciWebservice.deploy_configuration(\n",
+        "    cpu_cores=1,\n",
+        "    memory_gb=1,\n",
+        "    auth_enabled=True  # Enables authentication\n",
+        ")"
+      ],
+      "outputs": [],
+      "execution_count": 22,
+      "metadata": {
+        "jupyter": {
+          "source_hidden": false,
+          "outputs_hidden": false
+        },
+        "nteract": {
+          "transient": {
+            "deleting": false
+          }
+        },
+        "gather": {
+          "logged": 1736631687243
+        }
+      }
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "import json\n",
+        "import pandas as pd\n",
+        "import joblib\n",
+        "\n",
+        "# Load the trained model\n",
+        "model = joblib.load(\"random_forest_model.pkl\")  # Update path as necessary\n",
+        "\n",
+        "# Define expected columns\n",
+        "expected_columns = [\n",
+        "    'age', 'balance', 'day', 'duration', 'campaign', 'previous',\n",
+        "    'job_blue-collar', 'job_entrepreneur', 'job_housemaid', 'job_management',\n",
+        "    'job_retired', 'job_self-employed', 'job_services', 'job_student',\n",
+        "    'job_technician', 'job_unemployed', 'job_unknown', 'marital_married',\n",
+        "    'marital_single', 'education_secondary', 'education_tertiary',\n",
+        "    'education_unknown', 'contact_telephone', 'contact_unknown',\n",
+        "    'month_aug', 'month_dec', 'month_feb', 'month_jan', 'month_jul',\n",
+        "    'month_jun', 'month_mar', 'month_may', 'month_nov', 'month_oct',\n",
+        "    'month_sep', 'poutcome_other', 'poutcome_success', 'poutcome_unknown',\n",
+        "    'housing_new', 'loan_new'\n",
+        "]\n",
+        "\n",
+        "# Simulate raw input\n",
+        "raw_data = json.dumps({\n",
+        "    \"data\": [\n",
+        "        {\n",
+        "            \"age\": 35,\n",
+        "            \"balance\": 2000,\n",
+        "            \"day\": 15,\n",
+        "            \"duration\": 300,\n",
+        "            \"campaign\": 2,\n",
+        "            \"previous\": 1,\n",
+        "            \"job_blue-collar\": False,\n",
+        "            \"job_entrepreneur\": False,\n",
+        "            \"job_housemaid\": False,\n",
+        "            \"job_management\": True,\n",
+        "            \"job_retired\": False,\n",
+        "            \"job_self-employed\": False,\n",
+        "            \"job_services\": False,\n",
+        "            \"job_student\": False,\n",
+        "            \"job_technician\": False,\n",
+        "            \"job_unemployed\": False,\n",
+        "            \"job_unknown\": False,\n",
+        "            \"marital_married\": True,\n",
+        "            \"marital_single\": False,\n",
+        "            \"education_secondary\": True,\n",
+        "            \"education_tertiary\": False,\n",
+        "            \"education_unknown\": False,\n",
+        "            \"contact_telephone\": True,\n",
+        "            \"contact_unknown\": False,\n",
+        "            \"month_aug\": False,\n",
+        "            \"month_dec\": False,\n",
+        "            \"month_feb\": False,\n",
+        "            \"month_jan\": True,\n",
+        "            \"month_jul\": False,\n",
+        "            \"month_jun\": False,\n",
+        "            \"month_mar\": False,\n",
+        "            \"month_may\": True,\n",
+        "            \"month_nov\": False,\n",
+        "            \"month_oct\": False,\n",
+        "            \"month_sep\": False,\n",
+        "            \"poutcome_other\": False,\n",
+        "            \"poutcome_success\": True,\n",
+        "            \"poutcome_unknown\": False,\n",
+        "            \"housing_new\": 1,\n",
+        "            \"loan_new\": 0\n",
+        "        }\n",
+        "    ]\n",
+        "})\n",
+        "\n",
+        "# Simulate the `run()` function\n",
+        "def run(raw_data):\n",
+        "    try:\n",
+        "        # Parse input JSON\n",
+        "        input_data = json.loads(raw_data)\n",
+        "        print(\"Raw input data:\", input_data)\n",
+        "\n",
+        "        # Check for \"data\" key\n",
+        "        if \"data\" not in input_data:\n",
+        "            return {\"error\": \"Invalid input format. 'data' key is missing.\"}\n",
+        "\n",
+        "        # Convert to DataFrame\n",
+        "        input_df = pd.DataFrame(input_data[\"data\"])\n",
+        "        print(\"DataFrame after parsing input:\")\n",
+        "        print(input_df.head())\n",
+        "\n",
+        "        # Add missing columns and reorder\n",
+        "        for col in expected_columns:\n",
+        "            if col not in input_df.columns:\n",
+        "                input_df[col] = 0 if input_df.get(col).dtype != 'bool' else False\n",
+        "\n",
+        "        input_df = input_df[expected_columns]\n",
+        "        print(\"DataFrame before prediction:\")\n",
+        "        print(input_df.head())\n",
+        "\n",
+        "        # Predict\n",
+        "        predictions = model.predict(input_df)\n",
+        "        print(\"Predictions:\", predictions)\n",
+        "        return {\"predictions\": predictions.tolist()}\n",
+        "\n",
+        "    except Exception as e:\n",
+        "        return {\"error\": str(e)}\n",
+        "\n",
+        "# Run the simulation\n",
+        "response = run(raw_data)\n",
+        "print(\"Response:\", response)"
+      ],
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": "Raw input data: {'data': [{'age': 35, 'balance': 2000, 'day': 15, 'duration': 300, 'campaign': 2, 'previous': 1, 'job_blue-collar': False, 'job_entrepreneur': False, 'job_housemaid': False, 'job_management': True, 'job_retired': False, 'job_self-employed': False, 'job_services': False, 'job_student': False, 'job_technician': False, 'job_unemployed': False, 'job_unknown': False, 'marital_married': True, 'marital_single': False, 'education_secondary': True, 'education_tertiary': False, 'education_unknown': False, 'contact_telephone': True, 'contact_unknown': False, 'month_aug': False, 'month_dec': False, 'month_feb': False, 'month_jan': True, 'month_jul': False, 'month_jun': False, 'month_mar': False, 'month_may': True, 'month_nov': False, 'month_oct': False, 'month_sep': False, 'poutcome_other': False, 'poutcome_success': True, 'poutcome_unknown': False, 'housing_new': 1, 'loan_new': 0}]}\nDataFrame after parsing input:\n   age  balance  day  duration  campaign  previous  job_blue-collar  \\\n0   35     2000   15       300         2         1            False   \n\n   job_entrepreneur  job_housemaid  job_management  ...  month_mar  month_may  \\\n0             False          False            True  ...      False       True   \n\n   month_nov  month_oct  month_sep  poutcome_other  poutcome_success  \\\n0      False      False      False           False              True   \n\n   poutcome_unknown  housing_new  loan_new  \n0             False            1         0  \n\n[1 rows x 40 columns]\nDataFrame before prediction:\n   age  balance  day  duration  campaign  previous  job_blue-collar  \\\n0   35     2000   15       300         2         1            False   \n\n   job_entrepreneur  job_housemaid  job_management  ...  month_mar  month_may  \\\n0             False          False            True  ...      False       True   \n\n   month_nov  month_oct  month_sep  poutcome_other  poutcome_success  \\\n0      False      False      False           False              True   \n\n   poutcome_unknown  housing_new  loan_new  \n0             False            1         0  \n\n[1 rows x 40 columns]\nPredictions: [1]\nResponse: {'predictions': [1]}\n"
+        }
+      ],
+      "execution_count": 23,
+      "metadata": {
+        "jupyter": {
+          "source_hidden": false,
+          "outputs_hidden": false
+        },
+        "nteract": {
+          "transient": {
+            "deleting": false
+          }
+        },
+        "gather": {
+          "logged": 1736631722170
+        }
+      }
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "from azureml.core.environment import Environment\n",
+        "\n",
+        "env = Environment(name=\"deployment_env\")\n",
+        "env.python.conda_dependencies.add_pip_package(\"scikit-learn\")\n",
+        "env.python.conda_dependencies.add_pip_package(\"pandas\")\n",
+        "env.python.conda_dependencies.add_pip_package(\"joblib\")\n",
+        "env.python.conda_dependencies.add_pip_package(\"azureml-defaults\")"
+      ],
+      "outputs": [],
+      "execution_count": 24,
+      "metadata": {
+        "jupyter": {
+          "source_hidden": false,
+          "outputs_hidden": false
+        },
+        "nteract": {
+          "transient": {
+            "deleting": false
+          }
+        },
+        "gather": {
+          "logged": 1736631795167
+        }
+      }
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "import os\n",
+        "print(\"Current working directory:\", os.getcwd())"
+      ],
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": "Current working directory: /mnt/batch/tasks/shared/LS_root/mounts/clusters/malyuncompute/code/Users/malyun.musse\n"
+        }
+      ],
+      "execution_count": 25,
+      "metadata": {
+        "jupyter": {
+          "source_hidden": false,
+          "outputs_hidden": false
+        },
+        "nteract": {
+          "transient": {
+            "deleting": false
+          }
+        },
+        "gather": {
+          "logged": 1736631822145
+        }
+      }
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "import os\n",
+        "print(\"Does score.py exist in the current directory?\", os.path.exists(\"score.py\"))"
+      ],
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": "Does score.py exist in the current directory? True\n"
+        }
+      ],
+      "execution_count": 26,
+      "metadata": {
+        "jupyter": {
+          "source_hidden": false,
+          "outputs_hidden": false
+        },
+        "nteract": {
+          "transient": {
+            "deleting": false
+          }
+        },
+        "gather": {
+          "logged": 1736631861761
+        }
+      }
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "import os\n",
+        "print(\"Absolute path to score.py:\", os.path.abspath(\"score.py\"))"
+      ],
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": "Absolute path to score.py: /mnt/batch/tasks/shared/LS_root/mounts/clusters/malyuncompute/code/Users/malyun.musse/score.py\n"
+        }
+      ],
+      "execution_count": 27,
+      "metadata": {
+        "jupyter": {
+          "source_hidden": false,
+          "outputs_hidden": false
+        },
+        "nteract": {
+          "transient": {
+            "deleting": false
+          }
+        },
+        "gather": {
+          "logged": 1736632030308
+        }
+      }
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "import os\n",
+        "print(\"Current working directory:\", os.getcwd())"
+      ],
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": "Current working directory: /mnt/batch/tasks/shared/LS_root/mounts/clusters/malyuncompute/code/Users/malyun.musse\n"
+        }
+      ],
+      "execution_count": 28,
+      "metadata": {
+        "jupyter": {
+          "source_hidden": false,
+          "outputs_hidden": false
+        },
+        "nteract": {
+          "transient": {
+            "deleting": false
+          }
+        },
+        "gather": {
+          "logged": 1736632077089
+        }
+      }
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "import os\n",
+        "\n",
+        "def find_file(file_name, search_path):\n",
+        "    for root, dirs, files in os.walk(search_path):\n",
+        "        if file_name in files:\n",
+        "            return os.path.join(root, file_name)\n",
+        "    return None\n",
+        "\n",
+        "# Search for score.py in your working directory\n",
+        "search_path = \"/mnt/batch/tasks/shared/LS_root/mounts/clusters\"  # Adjust the path if needed\n",
+        "file_name = \"score.py\"\n",
+        "file_path = find_file(file_name, search_path)\n",
+        "\n",
+        "if file_path:\n",
+        "    print(f\"score.py found at: {file_path}\")\n",
+        "else:\n",
+        "    print(\"score.py not found!\")"
+      ],
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": "score.py found at: /mnt/batch/tasks/shared/LS_root/mounts/clusters/malyuncompute/code/score.py\n"
+        }
+      ],
+      "execution_count": 29,
+      "metadata": {
+        "jupyter": {
+          "source_hidden": false,
+          "outputs_hidden": false
+        },
+        "nteract": {
+          "transient": {
+            "deleting": false
+          }
+        },
+        "gather": {
+          "logged": 1736632119605
+        }
+      }
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "import json\n",
+        "import joblib\n",
+        "import numpy as np\n",
+        "import pandas as pd\n",
+        "\n",
+        "# Initialize the model\n",
+        "def init():\n",
+        "    global model\n",
+        "    # Load the model from the local file\n",
+        "    model_path = \"random_forest_model.pkl\"  # Ensure this is the name of your model file\n",
+        "    model = joblib.load(model_path)\n",
+        "\n",
+        "# Handle scoring requests\n",
+        "def run(raw_data):\n",
+        "    try:\n",
+        "        # Parse the input data\n",
+        "        input_data = json.loads(raw_data)\n",
+        "\n",
+        "        # Convert input data to DataFrame\n",
+        "        input_df = pd.DataFrame(input_data[\"data\"])\n",
+        "\n",
+        "        # Make predictions\n",
+        "        predictions = model.predict(input_df)\n",
+        "\n",
+        "        # Return the predictions as a list\n",
+        "        return {\"predictions\": predictions.tolist()}\n",
+        "    except Exception as e:\n",
+        "        return {\"error\": str(e)}"
+      ],
+      "outputs": [],
+      "execution_count": 30,
+      "metadata": {
+        "jupyter": {
+          "source_hidden": false,
+          "outputs_hidden": false
+        },
+        "nteract": {
+          "transient": {
+            "deleting": false
+          }
+        },
+        "gather": {
+          "logged": 1736632159403
+        }
+      }
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "from azureml.core.environment import Environment\n",
+        "from azureml.core.webservice import AciWebservice\n",
+        "from azureml.core.model import InferenceConfig, Model\n",
+        "from azureml.core import Workspace\n",
+        "\n",
+        "# Load the workspace\n",
+        "ws = Workspace.from_config()\n",
+        "\n",
+        "# Load the registered model\n",
+        "model = Model(ws, name=\"random_forest_model\")  # Replace with your registered model's name\n",
+        "\n",
+        "# Define the environment\n",
+        "env = Environment(name=\"deployment_env\")\n",
+        "env.python.conda_dependencies.add_pip_package(\"scikit-learn\")\n",
+        "env.python.conda_dependencies.add_pip_package(\"pandas\")\n",
+        "env.python.conda_dependencies.add_pip_package(\"joblib\")\n",
+        "env.python.conda_dependencies.add_pip_package(\"azureml-defaults\")\n",
+        "\n",
+        "# Set the inference configuration\n",
+        "inference_config = InferenceConfig(\n",
+        "    entry_script=\"/mnt/batch/tasks/shared/LS_root/mounts/clusters/malyuncompute/code/Users/malyun.musse/score.py\",\n",
+        "    environment=env\n",
+        ")\n",
+        "\n",
+        "# Define the deployment configuration\n",
+        "deployment_config = AciWebservice.deploy_configuration(cpu_cores=1, memory_gb=1)\n",
+        "\n",
+        "# Deploy the model\n",
+        "service = Model.deploy(\n",
+        "    workspace=ws,\n",
+        "    name=\"random-forest-service\",\n",
+        "    models=[model],\n",
+        "    inference_config=inference_config,\n",
+        "    deployment_config=deployment_config\n",
+        ")\n",
+        "\n",
+        "service.wait_for_deployment(show_output=True)\n",
+        "print(\"Service deployed at:\", service.scoring_uri)"
+      ],
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stderr",
+          "text": "/tmp/ipykernel_3167/3257764540.py:29: FutureWarning: azureml.core.model:\nTo leverage new model deployment capabilities, AzureML recommends using CLI/SDK v2 to deploy models as online endpoint, \nplease refer to respective documentations \nhttps://docs.microsoft.com/azure/machine-learning/how-to-deploy-managed-online-endpoints /\nhttps://docs.microsoft.com/azure/machine-learning/how-to-attach-kubernetes-anywhere \nFor more information on migration, see https://aka.ms/acimoemigration \nTo disable CLI/SDK v1 deprecation warning set AZUREML_LOG_DEPRECATION_WARNING_ENABLED to 'False'\n  service = Model.deploy(\n"
+        },
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": "Tips: You can try get_logs(): https://aka.ms/debugimage#dockerlog or local deployment: https://aka.ms/debugimage#debug-locally to debug if deployment takes longer than 10 minutes.\nRunning\n2025-01-11 21:58:36+00:00 Creating Container Registry if not exists.\n2025-01-11 21:58:37+00:00 Use the existing image.\n2025-01-11 21:58:38+00:00 Generating deployment configuration.\n2025-01-11 21:58:41+00:00 Submitting deployment to compute.\n2025-01-11 21:58:45+00:00 Checking the status of deployment random-forest-service..\n2025-01-11 22:00:12+00:00 Checking the status of inference endpoint random-forest-service.\nSucceeded\nACI service creation operation finished, operation \"Succeeded\"\nService deployed at: http://e7c7fad7-ebf6-406e-8ad6-12cc800fa0d5.eastus.azurecontainer.io/score\n"
+        }
+      ],
+      "execution_count": 32,
+      "metadata": {
+        "jupyter": {
+          "source_hidden": false,
+          "outputs_hidden": false
+        },
+        "nteract": {
+          "transient": {
+            "deleting": false
+          }
+        },
+        "gather": {
+          "logged": 1736632817305
+        }
+      }
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "def run(raw_data):\n",
+        "    print(\"Raw data received:\", raw_data)\n",
+        "    "
+      ],
+      "outputs": [],
+      "execution_count": 34,
+      "metadata": {
+        "jupyter": {
+          "source_hidden": false,
+          "outputs_hidden": false
+        },
+        "nteract": {
+          "transient": {
+            "deleting": false
+          }
+        },
+        "gather": {
+          "logged": 1736633130922
+        }
+      }
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "import requests\n",
+        "import json\n",
+        "\n",
+        "# Define test data\n",
+        "test_data = {\n",
+        "    \"data\": [\n",
+        "        {\n",
+        "            \"age\": 59,\n",
+        "            \"balance\": 2343,\n",
+        "            \"day\": 5,\n",
+        "            \"duration\": 1042,\n",
+        "            \"campaign\": 1,\n",
+        "            \"previous\": 0,\n",
+        "            \"job_blue-collar\": False,\n",
+        "            \"job_entrepreneur\": False,\n",
+        "            \"job_housemaid\": False,\n",
+        "            \"job_management\": False,\n",
+        "            \"job_retired\": False,\n",
+        "            \"job_self-employed\": False,\n",
+        "            \"job_services\": False,\n",
+        "            \"job_student\": False,\n",
+        "            \"job_technician\": False,\n",
+        "            \"job_unemployed\": False,\n",
+        "            \"job_unknown\": False,\n",
+        "            \"marital_married\": True,\n",
+        "            \"marital_single\": False,\n",
+        "            \"education_secondary\": True,\n",
+        "            \"education_tertiary\": False,\n",
+        "            \"education_unknown\": False,\n",
+        "            \"contact_telephone\": False,\n",
+        "            \"contact_unknown\": True,\n",
+        "            \"month_aug\": False,\n",
+        "            \"month_dec\": False,\n",
+        "            \"month_feb\": False,\n",
+        "            \"month_jan\": False,\n",
+        "            \"month_jul\": False,\n",
+        "            \"month_jun\": False,\n",
+        "            \"month_mar\": False,\n",
+        "            \"month_may\": True,\n",
+        "            \"month_nov\": False,\n",
+        "            \"month_oct\": False,\n",
+        "            \"month_sep\": False,\n",
+        "            \"poutcome_other\": False,\n",
+        "            \"poutcome_success\": False,\n",
+        "            \"poutcome_unknown\": True,\n",
+        "            \"housing_new\": 1,\n",
+        "            \"loan_new\": 0\n",
+        "        }\n",
+        "    ]\n",
+        "}\n",
+        "\n",
+        "# Send a POST request to the endpoint\n",
+        "scoring_uri = service.scoring_uri\n",
+        "headers = {\"Content-Type\": \"application/json\"}\n",
+        "response = requests.post(scoring_uri, json=test_data, headers=headers)\n",
+        "\n",
+        "# Check status code and response\n",
+        "print(\"Status Code:\", response.status_code)\n",
+        "print(\"Response Text:\", response.text)\n",
+        "try:\n",
+        "    print(\"Response JSON:\", response.json())\n",
+        "except json.JSONDecodeError:\n",
+        "    print(\"Response is not valid JSON.\")"
+      ],
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": "Status Code: 200\nResponse Text: {\"predictions\": [1]}\nResponse JSON: {'predictions': [1]}\n"
+        }
+      ],
+      "execution_count": 35,
+      "metadata": {
+        "jupyter": {
+          "source_hidden": false,
+          "outputs_hidden": false
+        },
+        "nteract": {
+          "transient": {
+            "deleting": false
+          }
+        },
+        "gather": {
+          "logged": 1736633157899
+        }
+      }
+    }
+  ],
+  "metadata": {
+    "kernelspec": {
+      "name": "python310-sdkv2",
+      "language": "python",
+      "display_name": "Python 3.10 - SDK v2"
+    },
+    "language_info": {
+      "name": "python",
+      "version": "3.10.14",
+      "mimetype": "text/x-python",
+      "codemirror_mode": {
+        "name": "ipython",
+        "version": 3
+      },
+      "pygments_lexer": "ipython3",
+      "nbconvert_exporter": "python",
+      "file_extension": ".py"
+    },
+    "microsoft": {
+      "ms_spell_check": {
+        "ms_spell_check_language": "en"
+      },
+      "host": {
+        "AzureML": {
+          "notebookHasBeenCompleted": true
+        }
+      }
+    },
+    "kernel_info": {
+      "name": "python310-sdkv2"
+    },
+    "nteract": {
+      "version": "nteract-front-end@1.0.0"
+    }
+  },
+  "nbformat": 4,
+  "nbformat_minor": 2
+}
